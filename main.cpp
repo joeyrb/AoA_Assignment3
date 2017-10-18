@@ -6,6 +6,7 @@ Instructor:		Dr. Rebenitsch
 Date:			October 24, 2017
 Description:	
 *************************************************************************/
+#include "CapitalBudget.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -24,7 +25,7 @@ struct Proposal
 	void setProps(string str)
 	{
 		// Find space separating integers
-		// size_t found = str.find(" ");
+		vector<int> nums;
 		stringstream ss;
 		ss << str;
 		string temp;
@@ -36,12 +37,15 @@ struct Proposal
 			// check if int
 			if(stringstream(temp) >> found)
 			{
-				cout << found << " ";
+				// cout << found << " ";
+				nums.push_back(found);
 			}
 			temp = "";
-			cout << endl;
 		}
+		cout << "Size: " << nums.size() << endl;
+		cout << nums[0] << " " << nums[1] << endl;
 	}
+
 };
 
 // Check if the line read is number of locations
@@ -72,65 +76,66 @@ bool openFileIn(fstream &file, string name)
 		return true;
 }
 
+// Get vector of integers from a string
+vector<int> getNums(string str)
+{
+	// Find space separating integers
+	vector<int> nums;
+	stringstream ss;
+	ss << str;
+	string temp;
+	int found;
+	if(str.size() > 0)
+	{
+		while(!ss.eof())
+		{
+			// extract characters from string
+			ss >> temp;
+			// check if int
+			if(stringstream(temp) >> found)
+			{
+				nums.push_back(found);
+			}
+			temp = "";
+		}
+	}
+	return nums;
+}
+
 // Display the file from the input
 void displayFile(fstream &file)
-{
-	bool locationsFound = false;
-	Proposal p;
-	char ch;
-	string line;
+{		
+	string line;		// Stores text read from txt file
+	vector<int> nums;	// Stores ints read from txt file
+
 	cout << "\nDisplaying Contents: \n";
 	cout <<   "------------------------\n";
-	// while(!file.eof())
-	// {
-	// 	getline(file,line);
-
-	// 	if (isLocation(line) && !file.eof() && locationsFound == false)
-	// 	{
-	// 		cout << "Number locations: " << line << endl;
-	// 		p.numLocations = stoi(line);
-	// 		locationsFound = true;
-	// 	}
-	// 	else if (isProposal(line, locationsFound) && !file.eof())
-	// 	{
-	// 		cout << "Number proposals: " << line << endl;
-	// 		p.numProposals.push_back( stoi(line) );
-	// 	}
-	// 	file.get(ch);
-	// 	while(ch != '\n')
-	// 	{
-	// 		if(ch != ' ' || ch != '\n')
-	// 			cout << '*' << ch << endl;
-	// 		file.get(ch);
-	// 	}
-	// }
-	// Read characters character by character
-	// getline(file,line);
-	// cout << "line: " << line << endl;
 	
-	file.get(ch);
-	cout << "Locations: " << ch << endl;
-	p.numLocations = (int)ch;
-	locationsFound = true;
 	while(!file.eof())
 	{
 		getline(file, line, '\n');
-		// cout << "\nlen: " << line.length() << endl;
-		// cout << "size: " << line.size() << endl;
+		
+		nums = getNums(line);
 
-		if(line.size() <= 2)
-			cout << "" << endl;
-		else
+		// Quit processing if reading the end of file
+		if(file.eof())
+			break;
+
+		// Display contents of text file 
+		if(nums.size() > 0)
 		{
-			p.setProps(line);
-			// cout << line << endl;
+			for (int i = 0; i < nums.size(); ++i)
+			{
+				cout << nums.at(i) << " ";
+			}
+			cout << endl;
 		}
 	}
 }
 
 
 
-
+// KEEP THIS FUNCTION????
 // Saves the contents of the file to a structure
 Proposal extract(fstream &file)
 {
@@ -172,13 +177,13 @@ void readInput(const char* infile)
 	fstream file;
 	if(openFileIn(file, infile))
 	{
-		cout << "File opened successfully.\n";
+		cout << endl << infile << " opened successfully.\n";
 		displayFile(file);
 		file.close();
-		cout << "\nend of file\n";
 	}
 	else 
 		cout << "File open error" << endl;
+	cout << "\nFile closed\n";
 }
 
 
@@ -219,7 +224,27 @@ int main(int argc, char const *argv[])
 	{
 		printf("Usage: %s file_name start_amount\n", argv[0]);
 	}
-	readInput(argv[1]);
+	
+
+	int last = argc - 1; 	// Index to the last element of the command line args
+
+	// Convert const char* to int
+	stringstream ss;
+	ss << argv[last];
+	
+	int start_amount;
+	ss >> start_amount;
+
+	CapitalBudget cb;
+	cout << "Start amout: " << start_amount << endl;
+
+
+	// Read all files from input
+	for (int i = 1; i < argc-1; ++i)
+	{
+		// readInput(argv[i]);
+		cb.readFile(argv[i]);
+	}
 
 	return 0;
 }

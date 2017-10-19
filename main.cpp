@@ -5,6 +5,31 @@ Class:			CSC372 Analysis of Algorithms
 Instructor:		Dr. Rebenitsch
 Date:			October 24, 2017
 Description:	
+	Max starting value = 15
+	Input = integer
+	Print state of algorithm at several locations:
+			- Proposals and costs per location after reading it in (tables)
+			- The current revenues, and "split" value(s) for each
+					starting amount after completing each location (tables)
+			- The final revenue and the plans selected at each location.
+			- Output the run time for the naive test and the dynamic test.
+				The purpose of this is to show that you used dynamic 
+				storage properly.
+	Use < or > when updating (not >= or <=, since that will give different results)
+
+	5 points for implementing your split structure.
+	5 points for using split structure correctly
+
+	5 points for correct output at 1 location
+	5 points for correct output at 2 locations
+	5 points for correct output at 3 locations
+	5 points for correct output at n locations
+	0 POINTS FOR NOT PASSING ANY TESTS
+
+	10 for using dynamic storage correctly (all or nothing)
+
+	Do NOT USE system("Pause"), cin>>var, etc to see the output in MSVS.
+	Put anything that is not working in the header for partial credit.
 *************************************************************************/
 #include "CapitalBudget.h"
 #include <iostream>
@@ -48,6 +73,12 @@ struct Proposal
 
 };
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Check if the line read is number of locations
 bool isLocation(string s)
 {
@@ -57,6 +88,12 @@ bool isLocation(string s)
 		return false;
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Check if line read is number of proposals for a location
 bool isProposal(string s, bool locFound)
 {
@@ -66,6 +103,12 @@ bool isProposal(string s, bool locFound)
 		return false;
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Check for errors while opening the file
 bool openFileIn(fstream &file, string name)
 {
@@ -76,6 +119,12 @@ bool openFileIn(fstream &file, string name)
 		return true;
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Get vector of integers from a string
 vector<int> getNums(string str)
 {
@@ -102,6 +151,12 @@ vector<int> getNums(string str)
 	return nums;
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Display the file from the input
 void displayFile(fstream &file)
 {		
@@ -161,6 +216,12 @@ Proposal extract(fstream &file)
 	return p;
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Accept the starting amount and proposals cost and
 //	revenue from a file via command line.
 void readInput(const char* infile)
@@ -190,33 +251,11 @@ void readInput(const char* infile)
 
 
 
-/*
-// Max starting value = 15
-// Input = integer
-// Print state of algorithm at several locations:
-//		- Proposals and costs per location after reading it in (tables)
-//		- The current revenues, and "split" value(s) for each
-//				starting amount after completing each location (tables)
-//		- The final revenue and the plans selected at each location.
-//		- Output the run time for the naive test and the dynamic test.
-//			The purpose of this is to show that you used dynamic 
-//			storage properly.
-// Use < or > when updating (not >= or <=, since that will give different results)
 
-// 5 points for implementing your split structure.
-// 5 points for using split structure correctly
 
-// 5 points for correct output at 1 location
-// 5 points for correct output at 2 locations
-// 5 points for correct output at 3 locations
-// 5 points for correct output at n locations
-// 0 POINTS FOR NOT PASSING ANY TESTS
-
-// 10 for using dynamic storage correctly (all or nothing)
-
-// Do NOT USE system("Pause"), cin>>var, etc to see the output in MSVS.
-// Put anything that is not working in the header for partial credit.
-*/
+/************************************************************************/
+/*****************************MAIN***************************************/
+/************************************************************************/
 
 int main(int argc, char const *argv[])
 {

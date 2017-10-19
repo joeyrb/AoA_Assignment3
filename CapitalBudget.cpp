@@ -6,24 +6,55 @@
 #include <string>
 using namespace std;
 
+/************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 
+
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 CapitalBudget::CapitalBudget()
 {
 
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Initialize object from a file
 CapitalBudget::CapitalBudget(fstream &file)
 {
 
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 CapitalBudget::~CapitalBudget()
 {
 
 }
 
-// Safely open a file
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
+// Safely open a file, return true is file is opened, false otherwise
 bool CapitalBudget::openFileIn(fstream &file, string name)
 {
 	file.open(name.c_str(), ios::in);
@@ -33,6 +64,12 @@ bool CapitalBudget::openFileIn(fstream &file, string name)
 		return true;
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Return a vector of nums from a string
 vector<int> CapitalBudget::getNums(string str)
 {
@@ -59,6 +96,12 @@ vector<int> CapitalBudget::getNums(string str)
 	return nums;
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Display the contents of a file
 void CapitalBudget::displayFile(fstream &file)
 {
@@ -91,6 +134,12 @@ void CapitalBudget::displayFile(fstream &file)
 	cout <<   "------------------------\n";
 }
 
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
 // Read a file
 void CapitalBudget::readFile(const char* infile)
 {

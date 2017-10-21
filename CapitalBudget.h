@@ -9,7 +9,7 @@ class CapitalBudget
 {
 public:
 	CapitalBudget();				// Default Constructor
-	CapitalBudget(fstream &file);	// Initialize with a file
+	CapitalBudget(const char* filename);	// Initialize with a file name 
 	~CapitalBudget();
 
 	// Methods
@@ -23,6 +23,8 @@ public:
 
 
 	// Accessors
+	int getStartAmount(){ return _startAmnt; }
+
 	int getNumLocations() { return _nLoc; }
 	
 	vector<int> getNumProposals() { return _numProp; }
@@ -37,6 +39,7 @@ public:
 
 
 	// Mutators
+	void setStartAmount( int val ) { _startAmnt = val; }
 	void setNumLocations(int n) { _nLoc = n; }
 	void setNumLocations(string str) { _nLoc = stoi(str); }
 	void setNumProposalsAt(int i, int n) { _numProp.at(i) = n; } 
@@ -44,6 +47,7 @@ public:
 	void setRevenueAt(int i, int j, int val) { _revenue[i][j] = val; }
 
 private:
+	int _startAmnt;					// Starting amount
 	int _nLoc;						// Total number of locations
 	vector<int> _numProp;			// Number of proposals per location
 	vector<vector<int>> _cost;		// 2D vector of cost per location

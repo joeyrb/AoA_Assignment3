@@ -271,11 +271,12 @@ int main(int argc, char const *argv[])
 	stringstream ss;
 	ss << argv[last];
 	
-	int start_amount;
-	ss >> start_amount;
-
+	// Set the starting amount to the last argument from command line input
 	CapitalBudget cb;
-	cout << "Start amout: " << start_amount << endl;
+	int amnt;
+	ss >> amnt;
+	cb.setStartAmount(amnt);
+
 
 
 	// Read all files from input

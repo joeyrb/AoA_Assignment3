@@ -22,7 +22,6 @@ using namespace std;
  ************************************************************************/
 CapitalBudget::CapitalBudget()
 {
-
 }
 
 /************************************************************************
@@ -32,9 +31,18 @@ CapitalBudget::CapitalBudget()
    Parameters:
  ************************************************************************/
 // Initialize object from a file
-CapitalBudget::CapitalBudget(fstream &file)
+CapitalBudget::CapitalBudget(const char* infile)
 {
-
+	fstream file;
+	if(openFileIn(file, infile))
+	{
+		cout << endl << infile << " opened successfully.\n";
+		displayFile(file);
+		file.close();
+	}
+	else 
+		cout << "File open error" << endl;
+	cout << "\nFile closed\n";
 }
 
 /************************************************************************
@@ -45,16 +53,15 @@ CapitalBudget::CapitalBudget(fstream &file)
  ************************************************************************/
 CapitalBudget::~CapitalBudget()
 {
-
 }
 
 /************************************************************************
    Function:
    Author:			Joey Brown
-   Description:
+   Description:		Safely open a file, return true is file is opened, 
+   						false otherwise
    Parameters:
  ************************************************************************/
-// Safely open a file, return true is file is opened, false otherwise
 bool CapitalBudget::openFileIn(fstream &file, string name)
 {
 	file.open(name.c_str(), ios::in);
@@ -65,12 +72,12 @@ bool CapitalBudget::openFileIn(fstream &file, string name)
 }
 
 /************************************************************************
-   Function:
+   Function:		getNums()
    Author:			Joey Brown
-   Description:
-   Parameters:
+   Description:		Extracts a vector of ints from a string and returns 
+   						the list as a vector of ints. 
+   Parameters:		String of numbers to extract.
  ************************************************************************/
-// Return a vector of nums from a string
 vector<int> CapitalBudget::getNums(string str)
 {
 	// Find space separating integers
@@ -97,10 +104,10 @@ vector<int> CapitalBudget::getNums(string str)
 }
 
 /************************************************************************
-   Function:
+   Function:		displayFile()
    Author:			Joey Brown
-   Description:
-   Parameters:
+   Description:		Displays the contents of a file from a file object.
+   Parameters:		Files object to open and display.
  ************************************************************************/
 // Display the contents of a file
 void CapitalBudget::displayFile(fstream &file)
@@ -135,10 +142,10 @@ void CapitalBudget::displayFile(fstream &file)
 }
 
 /************************************************************************
-   Function:
+   Function:		readFile()
    Author:			Joey Brown
-   Description:
-   Parameters:
+   Description:		Reads the file from the command line input.
+   Parameters:		File name from the command line input.
  ************************************************************************/
 // Read a file
 void CapitalBudget::readFile(const char* infile)

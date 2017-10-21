@@ -40,38 +40,6 @@ Description:
 #include <vector>
 using namespace std;
 
-struct Proposal
-{
-	int numLocations;
-	vector<int> numProp;	// Number of proposals per location
-	vector<int> cost;
-	vector<int> revenue;
-
-	void setProps(string str)
-	{
-		// Find space separating integers
-		vector<int> nums;
-		stringstream ss;
-		ss << str;
-		string temp;
-		int found;
-		while(!ss.eof())
-		{
-			// extract characters from string
-			ss >> temp;
-			// check if int
-			if(stringstream(temp) >> found)
-			{
-				// cout << found << " ";
-				nums.push_back(found);
-			}
-			temp = "";
-		}
-		cout << "Size: " << nums.size() << endl;
-		cout << nums[0] << " " << nums[1] << endl;
-	}
-
-};
 
 /************************************************************************
    Function:
@@ -189,33 +157,6 @@ void displayFile(fstream &file)
 }
 
 
-
-// KEEP THIS FUNCTION????
-// Saves the contents of the file to a structure
-Proposal extract(fstream &file)
-{
-	Proposal p;
-	bool locationsFound = false;
-	string line;
-	while(!file.eof())
-	{
-		getline(file,line);
-		if (isLocation(line) && !file.eof() && locationsFound == false)
-		{
-			p.numLocations = stoi(line);
-			locationsFound = true;
-			getline(file,line);
-			
-		}
-		if (isProposal(line, locationsFound) && !file.eof())
-		{
-			p.numProp.push_back( stoi(line) );
-		}
-	}
-
-	return p;
-}
-
 /************************************************************************
    Function:
    Author:			Joey Brown
@@ -283,8 +224,8 @@ int main(int argc, char const *argv[])
 	for (int i = 1; i < argc-1; ++i)
 	{
 		// readInput(argv[i]);
+		cb.displayFile(argv[i]);
 		cb.readFile(argv[i]);
-		// cb.displayFile(argv[i]);
 	}
 
 	return 0;

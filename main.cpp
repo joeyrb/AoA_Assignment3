@@ -284,6 +284,7 @@ int main(int argc, char const *argv[])
 	{
 		// readInput(argv[i]);
 		cb.readFile(argv[i]);
+		// cb.displayFile(argv[i]);
 	}
 
 	return 0;

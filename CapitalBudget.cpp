@@ -37,7 +37,7 @@ CapitalBudget::CapitalBudget(const char* infile)
 	if(openFileIn(file, infile))
 	{
 		cout << endl << infile << " opened successfully.\n";
-		displayFile(file);
+		// displayFile(file);
 		file.close();
 	}
 	else 
@@ -110,35 +110,52 @@ vector<int> CapitalBudget::getNums(string str)
    Parameters:		Files object to open and display.
  ************************************************************************/
 // Display the contents of a file
-void CapitalBudget::displayFile(fstream &file)
+void CapitalBudget::displayFile(const char* infile)
 {
-	string line;		// Stores text read from txt file
-	vector<int> nums;	// Stores ints read from txt file
-
-	cout << "\nContents: \n";
-	cout <<   "------------------------\n";
-	
-	while(!file.eof())
+	fstream file;
+	if(openFileIn(file, infile))
 	{
-		getline(file, line, '\n');
+		cout << endl << infile << " opened successfully.\n";
+		string line;		// Stores text read from txt file
+		vector<int> nums;	// Stores ints read from txt file
+		int loc_iter = 1;	// Location iterator
+
+		cout << "\nContents: \n";
+		cout <<   "------------------------\n";
 		
-		nums = getNums(line);
-
-		// Quit processing if reading the end of file
-		if(file.eof())
-			break;
-
-		// Display contents of text file 
-		if(nums.size() > 0)
+		getline(file,line);
+		cout << "Num Locations: " << line << endl;
+		while(!file.eof())
 		{
-			for (int i = 0; i < nums.size(); ++i)
+			getline(file, line, '\n');
+			nums = getNums(line);
+			if (nums.size() == 1 ) 
 			{
-				cout << nums.at(i) << " ";
+				cout << "\nLocation " << loc_iter << ": " << endl 
+						<< nums.at(0) << " proposals\n";
+				loc_iter++;
 			}
-			cout << endl;
+			// Quit processing if reading the end of file
+			if(file.eof())
+				break;
+
+			// Display contents of text file 
+			if(nums.size() > 1)
+			{
+				for (int i = 0; i < nums.size(); ++i)
+				{
+					cout << nums.at(i) << " ";
+				}
+				cout << endl;
+			}
 		}
+		cout <<   "------------------------\n";
+
+		file.close();
 	}
-	cout <<   "------------------------\n";
+	else 
+		cout << "File open error" << endl;
+	cout << "\nFile closed\n";
 }
 
 /************************************************************************
@@ -154,7 +171,59 @@ void CapitalBudget::readFile(const char* infile)
 	if(openFileIn(file, infile))
 	{
 		cout << endl << infile << " opened successfully.\n";
-		displayFile(file);
+		string line;		// Stores text read from txt file
+		vector<int> nums;	// Stores ints read from txt file
+		int curr_proposal = 0; 	// keeps track of current proposal
+
+		// Start with setting the number of locations
+		getline(file, line);
+		setNumLocations(line);
+
+		// Assign number of properties and locations when appropriate
+		while(!file.eof())
+		{
+			// Quit processing if reading the end of file
+			if(file.eof())
+				break;
+
+			// Read line and extract ints
+			getline(file, line, '\n');
+			nums = getNums(line);
+
+			// Add num proposals at location
+			if (nums.size() == 1)
+			{
+				appendNumProposals(nums.at(0));
+				vector<int> costVect;
+				vector<int> revVect;
+				while(!file.eof() && nums.size() > 1)
+				{
+					getline(file, line, '\n');
+					nums = getNums(line);
+					// set cost nums.at(0)
+					costVect.push_back(nums.at(0));
+					// set revenue nums.at(1)
+					revVect.push_back(nums.at(1));
+					addCostAt(curr_proposal, nums.at(0));
+					addRevenueAt(curr_proposal, nums.at(0));
+				}
+				curr_proposal++;
+			}
+
+
+			// Store contents of text file at current proposal
+			if(nums.size() > 0)
+			{
+				for (int i = 0; i < nums.size(); ++i)
+				{
+					// set cost nums.at(0)
+					addCostAt(curr_proposal-1, nums.at(i));
+					// set revenue nums.at(1)
+					addCostAt(curr_proposal-1, nums.at(i));
+				}
+			}
+		}
+		
 		file.close();
 	}
 	else 

@@ -47,36 +47,6 @@ using namespace std;
    Description:
    Parameters:
  ************************************************************************/
-// Check if the line read is number of locations
-bool isLocation(string s)
-{
-	if (s.size() <= 2)
-		return true;
-	else
-		return false;
-}
-
-/************************************************************************
-   Function:
-   Author:			Joey Brown
-   Description:
-   Parameters:
- ************************************************************************/
-// Check if line read is number of proposals for a location
-bool isProposal(string s, bool locFound)
-{
-	if (locFound && s.size() <= 2)
-		return true;
-	else
-		return false;
-}
-
-/************************************************************************
-   Function:
-   Author:			Joey Brown
-   Description:
-   Parameters:
- ************************************************************************/
 // Check for errors while opening the file
 bool openFileIn(fstream &file, string name)
 {
@@ -191,6 +161,62 @@ void readInput(const char* infile)
 
 
 
+// Permutations
+void PermuteSet(CapitalBudget S, int location, int size, vector<int> p)
+{
+	int n = S.getNumProposalsAt(location);
+	if(size >= n)
+	{
+		int sum = 0;
+		for (int i = 0; i < n; ++i)
+		{
+			sum += p.at(i);
+			cout << p.at(i) << " ";
+		}
+		// cout << " * ";
+		// cout << sum << " " ;
+		// cout << endl;
+		return;
+	}
+	for(int j = 0; j < (n-size); ++j)
+	{
+		p.at(size) = (S.getRevenueAt(location,j));
+		PermuteSet(S, location, size+1, p);
+	}
+}
+
+// TODO: 
+//		- Apply the permute set function to iterate through number of locations
+void PermuteRec(int n, int size, vector<int> p, bool* used)
+{
+	if(size >= n)
+	{
+		for(int i = 0; i < n; ++i)
+		{
+			cout << p.at(i) << " ";
+		}
+		cout << endl;
+		return;
+	}
+	// For each location, find permutations of each set
+	for (int i = 0; i < n; ++i)
+	{
+		if( !used[i] )
+		{
+			p.at(size) = i;
+			used[i] = true;
+			PermuteRec(n, size+1, p, used);
+			used[i] = false;
+		}
+	}
+}
+
+// Dynamic approach
+void dynamicApproach()
+{
+	// check for each proposal we can afford and keep the max
+	// last location = BASE CASE
+}
 
 
 
@@ -204,8 +230,6 @@ int main(int argc, char const *argv[])
 	{
 		printf("Usage: %s file_name start_amount\n", argv[0]);
 	}
-	
-
 	int last = argc - 1; 	// Index to the last element of the command line args
 
 	// Convert const char* to int
@@ -213,20 +237,56 @@ int main(int argc, char const *argv[])
 	ss << argv[last];
 	
 	// Set the starting amount to the last argument from command line input
-	CapitalBudget cb;
+	CapitalBudget cb(argv[1]);
 	int amnt;
 	ss >> amnt;
 	cb.setStartAmount(amnt);
+	cb.setAvailableAmount(cb.getStartAmount());
+
+	// PRINT STATES AT VARIOUS POINTS 
+
+	// PRINT STATE: proposals and costs per location after reading from input
+	cb.printContents();
 
 
-
-	// Read all files from input
-	for (int i = 1; i < argc-1; ++i)
+	// Naive approach
+	vector<int> p;
+	p.resize(5040);
+	// PermuteSet(cb, 0, 0, p);
+	
+	for (int j = 0; j < cb.getNumLocations(); ++j)
 	{
-		// readInput(argv[i]);
-		cb.displayFile(argv[i]);
-		cb.readFile(argv[i]);
+		vector<int> q;
+		q.resize(6000);
+		bool* used = new bool[cb.getNumProposalsAt(j)];
+		for (int i = 0; i < sizeof(used); ++i)
+		{
+			used[i] = false;
+		}
+		PermuteRec(cb.getNumProposalsAt(j), 0, q, used);
+		cout << endl;
+		q.resize(0);
 	}
+
+
+
+
+	// PRINT STATE: current revenues and "split" values for each
+	//		starting amount after completing each location
+	//		(in tables as done in class)
+
+	// PRINT STATE: final revenue and the plans selected at each location
+
+	// PRINT STATE: run time for the naive test and dynamic test
+
+
+	// // Read all files from input
+	// for (int i = 1; i < argc-1; ++i)
+	// {
+	// 	// readInput(argv[i]);
+	// 	// cb.displayFile(argv[i]);
+	// 	cb.readFile(argv[i]);
+	// }
 
 	return 0;
 }

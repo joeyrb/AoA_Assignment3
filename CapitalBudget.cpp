@@ -1,5 +1,6 @@
 #include "CapitalBudget.h"
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -8,7 +9,7 @@ using namespace std;
 
 /************************************************************************
    Function:
-   Author:
+   Author:			Joey Brown
    Description:
    Parameters:
  ************************************************************************/
@@ -25,24 +26,15 @@ CapitalBudget::CapitalBudget()
 }
 
 /************************************************************************
-   Function:
+   Function:		CapitalBudget()
    Author:			Joey Brown
-   Description:
-   Parameters:
+   Description:		Initialize object from a file
+   Parameters:		input file from command line
  ************************************************************************/
-// Initialize object from a file
+
 CapitalBudget::CapitalBudget(const char* infile)
 {
-	fstream file;
-	if(openFileIn(file, infile))
-	{
-		cout << endl << infile << " opened successfully.\n";
-		// displayFile(file);
-		file.close();
-	}
-	else 
-		cout << "File open error" << endl;
-	cout << "\nFile closed\n";
+	readFile(infile);
 }
 
 /************************************************************************
@@ -155,29 +147,30 @@ void CapitalBudget::displayFile(const char* infile)
 	}
 	else 
 		cout << "File open error" << endl;
-	cout << "\nFile closed\n";
+	cout << "File closed\n";
 }
 
 /************************************************************************
    Function:		readFile()
    Author:			Joey Brown
-   Description:		Reads the file from the command line input.
+   Description:		Reads the file from the command line input and sets
+   						member variables to corresponding values.
    Parameters:		File name from the command line input.
  ************************************************************************/
-// Read a file
 void CapitalBudget::readFile(const char* infile)
 {
 	fstream file;
 	if(openFileIn(file, infile))
 	{
-		cout << endl << infile << " opened successfully.\n";
 		string line;		// Stores text read from txt file
 		vector<int> nums;	// Stores ints read from txt file
 		int curr_proposal = 0; 	// keeps track of current proposal
 
-		// Start with setting the number of locations
+		// Start with setting the number of locations and resizing vectors
 		getline(file, line);
 		setNumLocations(line);
+		_cost.resize(getNumLocations());
+		_revenue.resize(getNumLocations());
 
 		// Assign number of properties and locations when appropriate
 		while(!file.eof())
@@ -193,52 +186,87 @@ void CapitalBudget::readFile(const char* infile)
 			// Add num proposals at location
 			if (nums.size() == 1)
 			{
-				appendNumProposals(nums.at(0));
-				vector<int> costVect;
-				vector<int> revVect;
-				while(!file.eof() && nums.size() > 1)
+				addNumProposals(nums.at(0));
+				// Allocate space for vectors at this location to size = num proposals
+				_cost.at(curr_proposal).resize(getNumProposalsAt(curr_proposal));
+				_revenue.at(curr_proposal).resize(getNumProposalsAt(curr_proposal));
+				
+				// 
+				for (int i = 0; i < getNumProposalsAt(curr_proposal); ++i)
 				{
+					// cout << "Test" << endl;
 					getline(file, line, '\n');
 					nums = getNums(line);
-					// set cost nums.at(0)
-					costVect.push_back(nums.at(0));
-					// set revenue nums.at(1)
-					revVect.push_back(nums.at(1));
-					addCostAt(curr_proposal, nums.at(0));
-					addRevenueAt(curr_proposal, nums.at(0));
+					setCostAt(curr_proposal, i, nums.at(0));
+					setRevenueAt(curr_proposal, i, nums.at(1));
 				}
 				curr_proposal++;
 			}
-
-
-			// Store contents of text file at current proposal
-			if(nums.size() > 0)
-			{
-				for (int i = 0; i < nums.size(); ++i)
-				{
-					// set cost nums.at(0)
-					addCostAt(curr_proposal-1, nums.at(i));
-					// set revenue nums.at(1)
-					addCostAt(curr_proposal-1, nums.at(i));
-				}
-			}
 		}
-		
 		file.close();
 	}
 	else 
 		cout << "File open error" << endl;
-	cout << "\nFile closed\n";
 }
 
-// // Overloaded readFile with string
-// void CapitalBudget::readFile(string infile)
-// {
+/************************************************************************
+   Function:		printCosts()
+   Author:			Joey Brown
+   Description:		Displays all costs to console
+   Parameters:		
+ ************************************************************************/
+void CapitalBudget::printCosts()
+{
+	for (int i = 0; i < getCostSize(); ++i)
+	{
+		for (int j = 0; j < getNumCostsAt(i); ++j)
+		{
+			cout << getCostAt(i,j) << " ";
+		}
+	}
+}
 
-// }
+/************************************************************************
+   Function:		printRevenue()
+   Author:			Joey Brown
+   Description:		Displays all revenue to console
+   Parameters:
+ ************************************************************************/
+void CapitalBudget::printRevenue()
+{
+	for (int i = 0; i < getRevenueSize(); ++i)
+	{
+		for (int j = 0; j < getNumRevenueAt(i); ++j)
+		{
+			cout << getRevenueAt(i,j) << " ";
+		}
+	}
+}
 
-// // Overloaded readFile with fstream
-// void CapitalBudget::readFile(fstream &infile)
-// {
+/************************************************************************
+   Function:		printContents()
+   Author:			Joey Brown
+   Description:		Displays all contents of object to console
+   Parameters:
+ ************************************************************************/
+void CapitalBudget::printContents()
+{
+	cout << "\nContents: \n";
+	cout <<   "------------------------\n";
+	
+	cout << "Num Locations: " << getNumLocations() << endl;
+	cout << "Start amount: " << getStartAmount() << endl;
 
-// }
+	for (int i = 0; i < getNumLocations(); ++i)
+	{
+		cout << "\nLocation " << i+1 << endl;
+		cout << "Proposals: " << getNumProposalsAt(i) << endl;
+		cout << "Cost" << "   " << "Revenue\n";
+		// cout << "----" << "   -------\n";
+		for (int j = 0; j < getNumProposalsAt(i); ++j)
+		{
+			cout << setw(3) << getCostAt(i,j) << "   " << setw(5) << getRevenueAt(i,j) << endl;
+		}
+	}
+	cout <<   "------------------------\n";
+}

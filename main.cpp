@@ -164,7 +164,7 @@ void readInput(const char* infile)
 // Permutations
 void PermuteSet(CapitalBudget S, int location, int size, vector<int> p)
 {
-	int n = S.getNumProposalsAt(location);
+	int n = S.getNumProposalsAt(location)*S.getNumLocations();
 	if(size >= n)
 	{
 		int sum = 0;
@@ -173,9 +173,7 @@ void PermuteSet(CapitalBudget S, int location, int size, vector<int> p)
 			sum += p.at(i);
 			cout << p.at(i) << " ";
 		}
-		// cout << " * ";
-		// cout << sum << " " ;
-		// cout << endl;
+		cout << endl;
 		return;
 	}
 	for(int j = 0; j < (n-size); ++j)
@@ -187,15 +185,16 @@ void PermuteSet(CapitalBudget S, int location, int size, vector<int> p)
 
 // TODO: 
 //		- Apply the permute set function to iterate through number of locations
-void PermuteRec(int n, int size, vector<int> p, bool* used)
+void PermuteRec(CapitalBudget cb, int n, int size, vector<int> p, vector<bool> used)
 {
 	if(size >= n)
 	{
 		for(int i = 0; i < n; ++i)
 		{
-			cout << p.at(i) << " ";
+			// cout << cb.getRevenueAt(n-i ,p.at(i)) << " ";
+			// cout << p.at(i) << " ";
 		}
-		cout << endl;
+		// cout << endl;
 		return;
 	}
 	// For each location, find permutations of each set
@@ -205,7 +204,7 @@ void PermuteRec(int n, int size, vector<int> p, bool* used)
 		{
 			p.at(size) = i;
 			used[i] = true;
-			PermuteRec(n, size+1, p, used);
+			PermuteRec(cb, n, size+1, p, used);
 			used[i] = false;
 		}
 	}
@@ -219,6 +218,22 @@ void dynamicApproach()
 }
 
 
+void myPerm(vector<int> p, int begin, int end)
+{
+	int i;
+	int range = end - begin;
+	if (range== 0)
+	{
+		cout << p.at(i) << endl;
+	}
+	else
+	{
+		for (int i = 0; i < range; ++i)
+		{
+			
+		}
+	}
+}
 
 /************************************************************************/
 /*****************************MAIN***************************************/
@@ -229,6 +244,7 @@ int main(int argc, char const *argv[])
 	if (argc < 3)
 	{
 		printf("Usage: %s file_name start_amount\n", argv[0]);
+		return -1;
 	}
 	int last = argc - 1; 	// Index to the last element of the command line args
 
@@ -250,24 +266,34 @@ int main(int argc, char const *argv[])
 
 
 	// Naive approach
-	vector<int> p;
-	p.resize(5040);
+	// Calculate number of all permutations
+	// int n = 1;
+	// for (int i = 0; i < cb.getNumLocations(); ++i)
+	// {
+	// 	n = n*cb.getNumProposalsAt(i);
+	// }
+	// cout << n << endl;
+
+
+
+
+	// vector<int> p;
+	// p.resize(5040);
 	// PermuteSet(cb, 0, 0, p);
 	
-	for (int j = 0; j < cb.getNumLocations(); ++j)
+	vector<int> q;
+	vector<bool> used;
+	for (int i = 0; i < cb.getNumLocations(); ++i)
 	{
-		vector<int> q;
+		used.resize(cb.getNumProposalsAt(i));
 		q.resize(6000);
-		bool* used = new bool[cb.getNumProposalsAt(j)];
-		for (int i = 0; i < sizeof(used); ++i)
-		{
-			used[i] = false;
-		}
-		PermuteRec(cb.getNumProposalsAt(j), 0, q, used);
+		PermuteRec(cb, cb.getNumProposalsAt(i), 0, q, used);
 		cout << endl;
 		q.resize(0);
+		used.resize(0);
 	}
 
+	
 
 
 

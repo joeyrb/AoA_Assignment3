@@ -31,7 +31,7 @@ public:
 
 	int getNumLocations() { return _nLoc; }								// Num locations
 	
-	vector<int> getNumProposals() { return _numProp; }					// Num proposals
+	vector<int> getProposals() { return _numProp; }					// Num proposals
 	int getNumProposalsAt(int i) { return _numProp.at(i); }
 	
 	vector<vector<int>> getCosts() { return _cost; }					// Cost

@@ -158,8 +158,17 @@ void readInput(const char* infile)
 	cout << "\nFile closed\n";
 }
 
-
-
+// r[ n ] = max( range: 1 <= i <= n ){ p[ i ] + r[ n - 1 ]}
+int max()
+{
+	int max = 0;
+	// TODO:
+	//	- use in recursive call for dynamic capital budgeting 
+	//	- return the maximum number from the list that provides the range 
+	//	- there are r[1] -> r[n] in finding optimum revenue
+	//	- max caclulates the maximum of the previously calculated r[i]
+	return max;
+}
 
 // Permutations
 void PermuteSet(CapitalBudget S, int location, int size, vector<int> p)

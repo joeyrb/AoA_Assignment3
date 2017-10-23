@@ -8,6 +8,8 @@ using namespace std;
 class CapitalBudget
 {
 public:
+	vector<vector<int>> _pSets;		// Sets of permutations
+
 
 	// Constructors & Destructors
 	CapitalBudget();						// Default Constructor
@@ -24,11 +26,12 @@ public:
 	void printContents();
 	void printPermutations();
 	void printSplits();
+	int* vectorToArray(vector<vector<int>> v);
 
 	// Naive algorithms
 	void permuteSet(int location, int size, vector<int> p, vector<bool> used);
 	void permuteRec(int location, int n, int size, vector<int> p, vector<bool> used);
-	void getPermutationSets();
+	void permute(int start, int size, vector<int> p, vector<bool> used);
 
 
 	// Accessors
@@ -54,6 +57,8 @@ public:
 
 
 
+
+
 	// Mutators
 	void setStartAmount( int val ) { _startAmnt = val; }				// Starting amount
 
@@ -73,9 +78,11 @@ public:
 
 	
 	void addPermutation(int val) { _pList.push_back(val); }				// Permutations
-	void addPermutationAt(int i, int val) { _pList.at(i) = val; }
+	void addPermutationAt(int i, int val) { _pSets.at(i).push_back(val);}
 
 	void addSplit(int loc) { _split.push_back(loc); }
+
+	void setPermutationSets();
 
 
 private:
@@ -88,5 +95,4 @@ private:
 
 	vector<int> _pList;				// List of permutions for each location
 	vector<int> _split;				// List of where the list was split
-	vector<vector<int>> _pSets;		// Sets of permutations
 };

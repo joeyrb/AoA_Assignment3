@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -295,35 +296,52 @@ void CapitalBudget::printPermutations()
    Description:
    Parameters:
  ************************************************************************/
- void CapitalBudget::printSplits()
- {
+void CapitalBudget::printSplits()
+{
  	cout << "Splits: \n";
  	for (int i = 0; i < _split.size(); ++i)
  	{
  		cout << _split.at(i) << " ";
  	}
  	cout << endl;
- }
+}
 
- /************************************************************************
+/************************************************************************
    Function:
    Author:			Joey Brown
    Description:
    Parameters:
- ************************************************************************/
+************************************************************************/
+int* CapitalBudget::vectorToArray(vector<vector<int>> v)
+{
+	int* arr;
+	for(int i = 0; i < v.size(); ++i)
+	{
+		for (int j = 0; j < v.at(i).size(); ++j)
+		{
+			cout << v.at(i).at(j) << endl;
+		}
+	}
+	return arr;
+}
+
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+************************************************************************/
 void CapitalBudget::permuteSet(int location, int size, vector<int> p, vector<bool> used)
 {
 	int n = getNumProposalsAt(location);
 	if(size >= n)
 	{
-		addSplit(location);
 		for (int i = 0; i < n; ++i)
 		{
-			cout << p.at(i) << " ";
-			addPermutation(p.at(i));
-			// cout << S.getRevenueAt(location, p.at(i)) << " ";
+			addPermutation(getRevenueAt(location, p.at(i)));
+			// cout << getRevenueAt(location, p.at(i)) << " ";
 		}
-		cout << endl;
+		// cout << endl;
 		return;
 	}
 	for(int i = 0; i < n-size; ++i)
@@ -348,15 +366,17 @@ void CapitalBudget::permuteRec(int location, int n, int size, vector<int> p, vec
 {
 	if(size >= n)
 	{
+		addSplit(size-1);
 		permuteSet(location, size, p, used);
 		return;
 	}
+
 	// For each location, find permutations of each set
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < n-size; ++i)
 	{
 		if( !used[i] )
 		{
-			// p.at(size) = i;
+			p.at(size) = i;
 			used[i] = true;
 			permuteRec(location, n, size+1, p, used);
 			used[i] = false;
@@ -370,7 +390,92 @@ void CapitalBudget::permuteRec(int location, int n, int size, vector<int> p, vec
    Description:
    Parameters:
 ************************************************************************/
-void CapitalBudget::getPermutationSets()
+
+int factorial(int n)
 {
-	
+	if (n == 0)
+		return 1;
+	else
+		n = n * factorial(n-1);
 }
+
+void CapitalBudget::setPermutationSets()
+{
+	vector<int>::iterator itStrt;
+	itStrt = _pList.begin();
+	vector<int>::iterator itEnd;
+	itEnd = _pList.begin()+_split.at(0)+1;
+	_pSets.resize(_split.size());
+	// Create 2D list of choices
+	for (int i = 0; i < _split.size(); ++i)
+	{
+		if(i > 0)
+		{
+			itStrt = itEnd;
+			itEnd = itStrt+_split.at(i)+1;
+		}
+		_pSets.at(i).resize(_split.at(i));
+		_pSets.at(i).assign(itStrt,itEnd);
+	}
+	cout << endl;
+}
+
+void CapitalBudget::permute(int start, int size, vector<int> p, vector<bool> used)
+{
+	int n = _pList.size();
+	
+	// If the end of a location is reached, then return
+	if (size >= n)
+	{
+		p.shrink_to_fit();
+		for (int i = 0; i < p.size(); ++i)
+		{
+			cout << p[i] << ' ';
+		}
+		cout << endl;
+		return;
+	}
+
+	// Traverse Locations remaining
+	for (int i = 0; i < _pSets.at(start).size(); ++i)
+	{
+		if (!used[i])
+		{
+			p[i] = (_pSets.at(start).at(size));
+			used[i] = true;
+			permute(start, size+1, p, used);
+			used[i] = false;
+		}
+	}
+
+}
+
+// void dynamicApproach(int location, int r, int n, int size, vector<int> p, vector<bool> used)
+// {
+// 	if(size >= n)
+// 	{
+// 		// 
+// 		for (int i = 0; i < n; ++i)
+// 		{
+// 			cout << cb.getRevenueAt(location, p.at(i)) << " ";
+// 		}
+// 		cout << endl;
+// 		return;
+// 	}
+// 	// For each location, find permutations of each set
+// 	for (int i = 0; i < n-size; ++i)
+// 	{
+// 		if( !used[i] )
+// 		{
+// 			if(cb.getAvailableAmount() >= cb.getCostAt(location, i))
+// 			{
+// 				p.at(i) = cb.getRevenueAt(location, i);
+				
+// 				cb.setAvailableAmount(cb.getAvailableAmount() - cb.getCostAt(location, i));
+// 				used[i] = true;
+// 				dynamicApproach(cb, location, n, size+1, p, used);
+// 				used[i] = false;
+// 			}
+// 		}
+// 	}
+// }

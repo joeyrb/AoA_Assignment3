@@ -38,6 +38,7 @@ Description:
 #include <sstream>
 #include <cmath>
 #include <vector>
+#include <chrono>
 using namespace std;
 
 
@@ -159,10 +160,10 @@ void readInput(const char* infile)
 }
 
 // Calculate factorial from 1 (begin) to n (end). Returns factorial and 1 if input = 0;
-int calcN(CapitalBudget cb, int loc)
+int calcN(CapitalBudget cb)
 {
 	int n = 1;
-	for (int i = 0; i < loc; ++i)
+	for (int i = 0; i < cb.getNumLocations(); ++i)
 	{
 		n = (n) * (cb.getNumProposalsAt(i));
 	}
@@ -175,6 +176,7 @@ int calcN(CapitalBudget cb, int loc)
 void PermuteSet(CapitalBudget cb, int location, int size, vector<int> p, vector<bool> used)
 {
 	int n = cb.getNumProposalsAt(location);
+	// int n = calcN(cb);
 	if(size >= n)
 	{
 		for (int i = 0; i < n; ++i)
@@ -184,13 +186,15 @@ void PermuteSet(CapitalBudget cb, int location, int size, vector<int> p, vector<
 		cout << endl;
 		return;
 	}
+
+	// Get each permutation for each set
 	for(int i = 0; i < n-size; ++i)
 	{
 		if(!used[i])
 		{
 			p.at(size) = (cb.getRevenueAt(location,i));
 			used[i] = true;
-			PermuteSet(cb, location, size+1, p, used);
+			PermuteSet(cb, location, size, p, used);
 			used[i] = false;
 		}
 	}
@@ -219,11 +223,34 @@ void PermuteRec(CapitalBudget cb, int location, int n, int size, vector<int> p, 
 }
 
 // Dynamic approach
-void dynamicApproach()
-{
-	// check for each proposal we can afford and keep the max
-	// last location = BASE CASE
-}
+// void dynamicApproach(CapitalBudget cb, int location, int r, int n, int size, vector<int> p, vector<bool> used)
+// {
+// 	if(size >= n)
+// 	{
+// 		for (int i = 0; i < n; ++i)
+// 		{
+// 			cout << cb.getRevenueAt(location, p.at(i)) << " ";
+// 		}
+// 		cout << endl;
+// 		return;
+// 	}
+// 	// For each location, find permutations of each set
+// 	for (int i = 0; i < n-size; ++i)
+// 	{
+// 		if( !used[i] )
+// 		{
+// 			if(cb.getAvailableAmount() >= cb.getCostAt(location, i))
+// 			{
+// 				p.at(i) = cb.getRevenueAt(location, i);
+				
+// 				cb.setAvailableAmount(cb.getAvailableAmount() - cb.getCostAt(location, i));
+// 				used[i] = true;
+// 				dynamicApproach(cb, location, n, size+1, p, used);
+// 				used[i] = false;
+// 			}
+// 		}
+// 	}
+// }
 
 
 /************************************************************************/
@@ -261,23 +288,29 @@ int main(int argc, char const *argv[])
 	// int* n;
 	// to find n, multiply the number of proposals together at every location
 	// cout << "n! = " << calcN(cb) << endl;
-
+	time_t currTime = time( 0 );
 	vector<int> q;
 	vector<bool> used;
 	int n = 1;
+	auto c = chrono::system_clock::now();
 	for (int i = 0; i < cb.getNumLocations(); ++i)
 	{
-		n = n * cb.getNumProposalsAt(i);
+		n = cb.getNumProposalsAt(i) * cb.getNumLocations();
 		used.resize(cb.getNumProposalsAt(i));
 		q.resize(n);
-		PermuteRec(cb, i, cb.getNumProposalsAt(i), 0, q, used);
-		cout << endl;
+
+		// Working:
+		// PermuteRec(cb, i, cb.getNumProposalsAt(i), 0, q, used);	// Generates n! permutations
+		cb.permuteRec(i, cb.getNumProposalsAt(i), 0, q, used);		// Generates n unique permutations (no repeats)
+
 		q.resize(0);
 		used.resize(0);
 	}
-
-
-
+	chrono::duration<double> pBench = chrono::system_clock::now() - c;
+	cb.printPermutations();
+	
+	// Create 2D list of permutations
+	cb.setPermutationSets();
 
 	// PRINT STATE: current revenues and "split" values for each
 	//		starting amount after completing each location
@@ -286,15 +319,6 @@ int main(int argc, char const *argv[])
 	// PRINT STATE: final revenue and the plans selected at each location
 
 	// PRINT STATE: run time for the naive test and dynamic test
-
-
-	// // Read all files from input
-	// for (int i = 1; i < argc-1; ++i)
-	// {
-	// 	// readInput(argv[i]);
-	// 	// cb.displayFile(argv[i]);
-	// 	cb.readFile(argv[i]);
-	// }
-
+	cout << "Permutation benchmark: " << 1000*pBench.count() << " ms\n";
 	return 0;
 }

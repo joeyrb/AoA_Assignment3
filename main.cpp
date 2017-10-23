@@ -158,18 +158,6 @@ void readInput(const char* infile)
 	cout << "\nFile closed\n";
 }
 
-// r[ n ] = max( range: 1 <= i <= n ){ p[ i ] + r[ n - 1 ]}
-int max()
-{
-	int max = 0;
-	// TODO:
-	//	- use in recursive call for dynamic capital budgeting 
-	//	- return the maximum number from the list that provides the range 
-	//	- there are r[1] -> r[n] in finding optimum revenue
-	//	- max caclulates the maximum of the previously calculated r[i]
-	return max;
-}
-
 // Calculate factorial from 1 (begin) to n (end). Returns factorial and 1 if input = 0;
 int calcN(CapitalBudget cb, int loc)
 {
@@ -184,16 +172,14 @@ int calcN(CapitalBudget cb, int loc)
 
 
 // Permutations
-void PermuteSet(CapitalBudget S, int location, int size, vector<int> p, vector<bool> used)
+void PermuteSet(CapitalBudget cb, int location, int size, vector<int> p, vector<bool> used)
 {
-	int n = S.getNumProposalsAt(location);
+	int n = cb.getNumProposalsAt(location);
 	if(size >= n)
 	{
 		for (int i = 0; i < n; ++i)
 		{
-			cout << S.getRevenueAt(location, p.at(i)) << " ";
-			// S.addPermutation(p.at(i));
-			// PermuteRec(cb, location, n, size+1, p, used);
+			cout << cb.getRevenueAt(location, p.at(i)) << " ";
 		}
 		cout << endl;
 		return;
@@ -202,10 +188,9 @@ void PermuteSet(CapitalBudget S, int location, int size, vector<int> p, vector<b
 	{
 		if(!used[i])
 		{
-			p.at(size) = (S.getRevenueAt(location,i));
+			p.at(size) = (cb.getRevenueAt(location,i));
 			used[i] = true;
-			// PermuteRec(cb, location, n, size+1, p, used);
-			PermuteSet(S, location, size+1, p, used);
+			PermuteSet(cb, location, size+1, p, used);
 			used[i] = false;
 		}
 	}
@@ -218,12 +203,6 @@ void PermuteRec(CapitalBudget cb, int location, int n, int size, vector<int> p, 
 	if(size >= n)
 	{
 		PermuteSet(cb, location, size, p, used);
-		// PermuteRec(cb, location, n, size+1, p, used);
-		// for (int i = 0; i < p.size(); ++i)
-		// {
-		// 	cout << p.at(i) << " ";
-		// }
-		// cout << endl;
 		return;
 	}
 	// For each location, find permutations of each set
@@ -234,7 +213,6 @@ void PermuteRec(CapitalBudget cb, int location, int n, int size, vector<int> p, 
 			p.at(size) = i;
 			used[i] = true;
 			PermuteRec(cb, location, n, size+1, p, used);
-			// PermuteSet(S, location, size+1, p, used);
 			used[i] = false;
 		}
 	}
@@ -284,17 +262,6 @@ int main(int argc, char const *argv[])
 	// to find n, multiply the number of proposals together at every location
 	// cout << "n! = " << calcN(cb) << endl;
 
-
-
-
-	// vector<int> p;
-	// for (int i = 0; i < cb.getNumLocations(); ++i)
-	// {
-	// 	p.resize(n);
-	// 	PermuteSet(cb, i, 0, p);
-	// 	p.resize(0);	
-	// }
-
 	vector<int> q;
 	vector<bool> used;
 	int n = 1;
@@ -304,12 +271,6 @@ int main(int argc, char const *argv[])
 		used.resize(cb.getNumProposalsAt(i));
 		q.resize(n);
 		PermuteRec(cb, i, cb.getNumProposalsAt(i), 0, q, used);
-		
-		// PermuteRec(cb, i, n, 0, q, used);
-
-		// PermuteRec(cb, i, , 0, q, used);
-		// PermuteSet(cb, i, 0, q, used);
-		// cb.permuteSet(i, 0, q, used);
 		cout << endl;
 		q.resize(0);
 		used.resize(0);

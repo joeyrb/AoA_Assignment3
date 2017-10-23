@@ -22,6 +22,13 @@ public:
 	void printCosts();
 	void printRevenue();
 	void printContents();
+	void printPermutations();
+	void printSplits();
+
+	// Naive algorithms
+	void permuteSet(int location, int size, vector<int> p, vector<bool> used);
+	void permuteRec(int location, int n, int size, vector<int> p, vector<bool> used);
+	void getPermutationSets();
 
 
 	// Accessors
@@ -31,7 +38,7 @@ public:
 
 	int getNumLocations() { return _nLoc; }								// Num locations
 	
-	vector<int> getProposals() { return _numProp; }					// Num proposals
+	vector<int> getProposals() { return _numProp; }						// Num proposals
 	int getNumProposalsAt(int i) { return _numProp.at(i); }
 	
 	vector<vector<int>> getCosts() { return _cost; }					// Cost
@@ -46,10 +53,11 @@ public:
 
 
 
+
 	// Mutators
 	void setStartAmount( int val ) { _startAmnt = val; }				// Starting amount
 
-	void setAvailableAmount(int val) { _amntAvail = val; }						// Available amount
+	void setAvailableAmount(int val) { _amntAvail = val; }				// Available amount
 	
 	void setNumLocations(int n) { _nLoc = n; }							// Num Locations
 	void setNumLocations(string str) { _nLoc = stoi(str); }
@@ -63,6 +71,13 @@ public:
 	void setRevenueAt(int i, int j, int val) { _revenue[i][j] = val; }	// Revenue
 	void addRevenueAt(int i, int val) { _revenue[i].push_back(val); }
 
+	
+	void addPermutation(int val) { _pList.push_back(val); }				// Permutations
+	void addPermutationAt(int i, int val) { _pList.at(i) = val; }
+
+	void addSplit(int loc) { _split.push_back(loc); }
+
+
 private:
 	int _startAmnt;					// Starting amount
 	int _amntAvail;					// Available amount
@@ -70,4 +85,8 @@ private:
 	vector<int> _numProp;			// Number of proposals per location
 	vector<vector<int>> _cost;		// 2D vector of cost per location
 	vector<vector<int>> _revenue;			// 2D vector of revenue per location
+
+	vector<int> _pList;				// List of permutions for each location
+	vector<int> _split;				// List of where the list was split
+	vector<vector<int>> _pSets;		// Sets of permutations
 };

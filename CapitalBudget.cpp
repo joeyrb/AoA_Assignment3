@@ -31,9 +31,11 @@ CapitalBudget::CapitalBudget()
    Description:		Initialize object from a file
    Parameters:		input file from command line
  ************************************************************************/
-
+// TODO: 
+// 		- accept the full command line argument list and build from there
 CapitalBudget::CapitalBudget(const char* infile)
 {
+	// Fill contents from command line argument
 	readFile(infile);
 }
 
@@ -269,4 +271,106 @@ void CapitalBudget::printContents()
 		}
 	}
 	cout <<   "------------------------\n";
+}
+
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
+void CapitalBudget::printPermutations()
+{
+	cout << "Permutations: \n";
+	for (int i = 0; i < _pList.size(); ++i)
+	{
+		cout << _pList.at(i) << " ";
+	}
+		cout << endl;
+}
+
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
+ void CapitalBudget::printSplits()
+ {
+ 	cout << "Splits: \n";
+ 	for (int i = 0; i < _split.size(); ++i)
+ 	{
+ 		cout << _split.at(i) << " ";
+ 	}
+ 	cout << endl;
+ }
+
+ /************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+ ************************************************************************/
+void CapitalBudget::permuteSet(int location, int size, vector<int> p, vector<bool> used)
+{
+	int n = getNumProposalsAt(location);
+	if(size >= n)
+	{
+		addSplit(location);
+		for (int i = 0; i < n; ++i)
+		{
+			cout << p.at(i) << " ";
+			addPermutation(p.at(i));
+			// cout << S.getRevenueAt(location, p.at(i)) << " ";
+		}
+		cout << endl;
+		return;
+	}
+	for(int i = 0; i < n-size; ++i)
+	{
+		if(!used[i])
+		{
+			p.at(size) = (getRevenueAt(location,i));
+			used[i] = true;
+			permuteSet(location, size+1, p, used);
+			used[i] = false;
+		}
+	}
+}
+
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+************************************************************************/
+void CapitalBudget::permuteRec(int location, int n, int size, vector<int> p, vector<bool> used)
+{
+	if(size >= n)
+	{
+		permuteSet(location, size, p, used);
+		return;
+	}
+	// For each location, find permutations of each set
+	for (int i = 0; i < n; ++i)
+	{
+		if( !used[i] )
+		{
+			// p.at(size) = i;
+			used[i] = true;
+			permuteRec(location, n, size+1, p, used);
+			used[i] = false;
+		}
+	}
+}
+
+/************************************************************************
+   Function:
+   Author:			Joey Brown
+   Description:
+   Parameters:
+************************************************************************/
+void CapitalBudget::getPermutationSets()
+{
+	
 }

@@ -170,39 +170,59 @@ int max()
 	return max;
 }
 
-// Permutations
-void PermuteSet(CapitalBudget S, int location, int size, vector<int> p)
+// Calculate factorial from 1 (begin) to n (end). Returns factorial and 1 if input = 0;
+int calcN(CapitalBudget cb, int loc)
 {
-	int n = S.getNumProposalsAt(location)*S.getNumLocations();
+	int n = 1;
+	for (int i = 0; i < loc; ++i)
+	{
+		n = (n) * (cb.getNumProposalsAt(i));
+	}
+	return n;
+}
+
+
+
+// Permutations
+void PermuteSet(CapitalBudget S, int location, int size, vector<int> p, vector<bool> used)
+{
+	int n = S.getNumProposalsAt(location);
 	if(size >= n)
 	{
-		int sum = 0;
 		for (int i = 0; i < n; ++i)
 		{
-			sum += p.at(i);
-			cout << p.at(i) << " ";
+			cout << S.getRevenueAt(location, p.at(i)) << " ";
+			// S.addPermutation(p.at(i));
+			// PermuteRec(cb, location, n, size+1, p, used);
 		}
 		cout << endl;
 		return;
 	}
-	for(int j = 0; j < (n-size); ++j)
+	for(int i = 0; i < n-size; ++i)
 	{
-		p.at(size) = (S.getRevenueAt(location,j));
-		PermuteSet(S, location, size+1, p);
+		if(!used[i])
+		{
+			p.at(size) = (S.getRevenueAt(location,i));
+			used[i] = true;
+			// PermuteRec(cb, location, n, size+1, p, used);
+			PermuteSet(S, location, size+1, p, used);
+			used[i] = false;
+		}
 	}
 }
 
 // TODO: 
 //		- Apply the permute set function to iterate through number of locations
-void PermuteRec(CapitalBudget cb, int n, int size, vector<int> p, vector<bool> used)
+void PermuteRec(CapitalBudget cb, int location, int n, int size, vector<int> p, vector<bool> used)
 {
 	if(size >= n)
 	{
-		for(int i = 0; i < n; ++i)
-		{
-			// cout << cb.getRevenueAt(n-i ,p.at(i)) << " ";
-			// cout << p.at(i) << " ";
-		}
+		PermuteSet(cb, location, size, p, used);
+		// PermuteRec(cb, location, n, size+1, p, used);
+		// for (int i = 0; i < p.size(); ++i)
+		// {
+		// 	cout << p.at(i) << " ";
+		// }
 		// cout << endl;
 		return;
 	}
@@ -213,7 +233,8 @@ void PermuteRec(CapitalBudget cb, int n, int size, vector<int> p, vector<bool> u
 		{
 			p.at(size) = i;
 			used[i] = true;
-			PermuteRec(cb, n, size+1, p, used);
+			PermuteRec(cb, location, n, size+1, p, used);
+			// PermuteSet(S, location, size+1, p, used);
 			used[i] = false;
 		}
 	}
@@ -226,23 +247,6 @@ void dynamicApproach()
 	// last location = BASE CASE
 }
 
-
-void myPerm(vector<int> p, int begin, int end)
-{
-	int i;
-	int range = end - begin;
-	if (range== 0)
-	{
-		cout << p.at(i) << endl;
-	}
-	else
-	{
-		for (int i = 0; i < range; ++i)
-		{
-			
-		}
-	}
-}
 
 /************************************************************************/
 /*****************************MAIN***************************************/
@@ -276,33 +280,41 @@ int main(int argc, char const *argv[])
 
 	// Naive approach
 	// Calculate number of all permutations
-	// int n = 1;
-	// for (int i = 0; i < cb.getNumLocations(); ++i)
-	// {
-	// 	n = n*cb.getNumProposalsAt(i);
-	// }
-	// cout << n << endl;
+	// int* n;
+	// to find n, multiply the number of proposals together at every location
+	// cout << "n! = " << calcN(cb) << endl;
 
 
 
 
 	// vector<int> p;
-	// p.resize(5040);
-	// PermuteSet(cb, 0, 0, p);
-	
+	// for (int i = 0; i < cb.getNumLocations(); ++i)
+	// {
+	// 	p.resize(n);
+	// 	PermuteSet(cb, i, 0, p);
+	// 	p.resize(0);	
+	// }
+
 	vector<int> q;
 	vector<bool> used;
+	int n = 1;
 	for (int i = 0; i < cb.getNumLocations(); ++i)
 	{
+		n = n * cb.getNumProposalsAt(i);
 		used.resize(cb.getNumProposalsAt(i));
-		q.resize(6000);
-		PermuteRec(cb, cb.getNumProposalsAt(i), 0, q, used);
+		q.resize(n);
+		PermuteRec(cb, i, cb.getNumProposalsAt(i), 0, q, used);
+		
+		// PermuteRec(cb, i, n, 0, q, used);
+
+		// PermuteRec(cb, i, , 0, q, used);
+		// PermuteSet(cb, i, 0, q, used);
+		// cb.permuteSet(i, 0, q, used);
 		cout << endl;
 		q.resize(0);
 		used.resize(0);
 	}
 
-	
 
 
 
